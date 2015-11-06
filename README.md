@@ -26,6 +26,7 @@ This is the PHP backend that handles downloading of the HTML email and also send
 
 ```
 /img/index.php
+/img/resize.php
 ```
 This is the PHP backend that handles generating the placeholder images and also the resizing of images.
 
