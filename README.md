@@ -4,11 +4,13 @@ This is a PHP backend for Mosaico
 
 Mosaico can be found at https://github.com/voidlabs/mosaico
 
-First, install Mosaico.  Then install these files on top of the Mosaico installation.  This project contains 3 new folders, 4 new files, and one modified file.  You do need to have Imagemagick support enabled in your PHP configuration.
+First, install and set up Mosaico.  Then install these files on top of the Mosaico installation.
 
 ## Dependencies
 
-This project requires Premailer (http://premailer.dialect.ca/) to work.  The Premailer API is used to inline CSS styles.  If that service is ever taken down, we will have to find an alternate solution.  Or if you have an alternate solution that does not require dependencies on a web service, feel free to contribute!
+You do need to have Imagemagick support enabled in your PHP configuration.
+
+This project also requires Premailer (http://premailer.dialect.ca/).  Premailer is used to inline the CSS styles.  If that service is ever taken down, we will have to find an alternate solution.  Or, if you have an alternate solution that does not require dependencies on a web service, feel free to contribute!
 
 ## New folders and files
 ```
@@ -18,8 +20,9 @@ At the top of this file are a few variables that you can adjust if necessary.
 
 ```
 /dl/index.php
+/dl/premailer.php
 ```
-This is the PHP backend that handles downloading of the HTML email and also sending of the test email.
+This is the PHP backend that handles downloading of the HTML email and also sending of the test email.  The premailer.php file came from here: https://gist.github.com/barock19/1591053
 
 ```
 /img/index.php
