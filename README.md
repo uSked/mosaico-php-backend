@@ -8,17 +8,7 @@ First, install Mosaico.  Then install these files on top of the Mosaico installa
 
 ## Dependencies
 
-This project requires CssToInlineStyles to work.  You can install that using composer.  To do that, from inside your root Mosaico installation directory do the following:
-
-```
-curl -sS https://getcomposer.org/installer | php
-```
-
-That will install Composer.  Then to use composer to install CssToInlineStyles:
-
-```
-php composer.phar install
-```
+This project requires Premailer to work.  The Premailer API is used to inline CSS styles.  If that service is ever taken down, we will have to find an alternate solution.
 
 ## New folders and files
 ```
