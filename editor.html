@@ -28,13 +28,12 @@ $(function() {
     alert('Update your browser!');
     return;
   }
-  var webpath = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
   var ok = Mosaico.init({
-    imgProcessorBackend: webpath + '/img',
-    emailProcessorBackend: webpath + '/dl/',
+    imgProcessorBackend: 'img',
+    emailProcessorBackend: 'dl/',
     titleToken: "MOSAICO Responsive Email Designer",
     fileuploadConfig: {
-      url: webpath + '/upload/',
+      url: 'upload/',
       // messages??
     }
   });
