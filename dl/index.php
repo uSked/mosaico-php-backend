@@ -5,7 +5,9 @@ chdir( ".." );
 require( "config.php" );
 require( "dl/premailer.php" );
 
-$premailer = Premailer::html( $_POST[ "html" ] );
+$base_url = ( isset( $_SERVER[ "HTTPS" ] ) ? "https" : "http" ) . "://" . $_SERVER[ "SERVER_NAME" ] . dirname( dirname( $_SERVER[ "PHP_SELF" ] ) ) . "/";
+
+$premailer = Premailer::html( $_POST[ "html" ], true, "hpricot", $base_url );
 
 $html = $premailer[ "html" ];
 

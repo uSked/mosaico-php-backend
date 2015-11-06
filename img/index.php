@@ -56,7 +56,8 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 		}
 
 		$draw->setFillColor( "#B0B0B0" );
-		$draw->setFontSize( 20 );
+		$draw->setFontSize( $width / 5 );
+		$draw->setFontWeight( 800 );
 		$draw->setGravity( Imagick::GRAVITY_CENTER );
 		$draw->annotation( 0, 0, $width . " x " . $height );
 

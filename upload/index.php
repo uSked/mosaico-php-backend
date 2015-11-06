@@ -16,13 +16,13 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 		{
 			$file = array(
 				"name" => $file_name,
-				"url" => $uploads_url . $file_name,
+				"url" => $uploads_dir . $file_name,
 				"size" => filesize( $uploads_dir . $file_name )
 			);
 			
 			if ( file_exists( realpath( $thumbnails_dir . $file_name ) ) )
 			{
-				$file[ "thumbnailUrl" ] = $thumbnails_url . $file_name;
+				$file[ "thumbnailUrl" ] = $thumbnails_dir . $file_name;
 			}
 			
 			$files[] = $file;
@@ -49,9 +49,9 @@ else if ( !empty( $_FILES ) )
 				
 				$file = array(
 					"name" => $file_name,
-					"url" => $uploads_url . $file_name,
+					"url" => $uploads_dir . $file_name,
 					"size" => filesize( $uploads_dir . $file_name ),
-					"thumbnailUrl" => $thumbnails_url . $file_name
+					"thumbnailUrl" => $thumbnails_dir . $file_name
 				);
 				
 				$files[] = $file;
