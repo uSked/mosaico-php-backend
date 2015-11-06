@@ -32,8 +32,8 @@ This is the PHP backend that handles image uploads and retrieving of a list of u
 ```
 editor.html
 ```
-This example file has been slightly modified in the following ways:
+This example file has been slightly modified.
 
-1) The three URL paths to the backend (/img, /dl, and /upload) has been made into the full URL path instead to make it possible to use this example editor.html file in subdirectories.
+1) The leading slashes in the three paths to the back end (/dl, /img, and /upload) has been removed so that Mosaico can be used in subfolders and not have to be at the root
 
-2) A trailing slash (/) has been added to /dl and /upload to avoid 301 redirects which Mosaico does not handle well.  The /img backend does not need a trailing slash added because the Mosaico code already adds one when this is used.
+2) trailing slashes have been added to /dl and /upload to avoid 301 redirects which Mosaico does not handle well.  The /img backend path here does not need a trailing slash added because the Mosaico code already adds one when this is used.
