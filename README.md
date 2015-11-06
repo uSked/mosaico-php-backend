@@ -10,11 +10,15 @@ First, install Mosaico.  Then install these files on top of the Mosaico installa
 
 This project requires CssToInlineStyles to work.  You can install that using composer.  To do that, from inside your root Mosaico installation directory do the following:
 
-```curl -sS https://getcomposer.org/installer | php```
+```
+curl -sS https://getcomposer.org/installer | php
+```
 
 That will install Composer.  Then to use composer to install CssToInlineStyles:
 
-```php composer.phar install```
+```
+php composer.phar install
+```
 
 ## New folders and files
 ```
