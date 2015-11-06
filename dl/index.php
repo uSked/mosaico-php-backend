@@ -3,6 +3,11 @@
 chdir( ".." );
 
 require( "config.php" );
+require( "dl/premailer.php" );
+
+$premailer = Premailer::html( $_POST[ "html" ] );
+
+$html = $premailer[ "html" ];
 
 switch ( $_POST[ "action" ] )
 {
@@ -10,9 +15,9 @@ switch ( $_POST[ "action" ] )
 	{
 		header( "Content-Type: application/force-download" );
 		header( "Content-Disposition: attachment; filename=\"" . $_POST[ "filename" ] . "\"" );
-		header( "Content-Length: " . strlen( $_POST[ "html" ] ) );
+		header( "Content-Length: " . strlen( $html ) );
 		
-		echo $_POST[ "html" ];
+		echo $html;
 		
 		break;
 	}
@@ -21,7 +26,6 @@ switch ( $_POST[ "action" ] )
 	{
 		$to = $_POST[ "rcpt" ];
 		$subject = $_POST[ "subject" ];
-		$message = $_POST[ "html" ];
 		
 		$headers = array();
 		
@@ -32,7 +36,7 @@ switch ( $_POST[ "action" ] )
 		
 		$headers = implode( "\r\n", $headers );
 
-		if ( mail( $to, $subject, $message, $headers ) === FALSE )
+		if ( mail( $to, $subject, $html, $headers ) === FALSE )
 		{
 			header( $_SERVER[ "SERVER_PROTOCOL" ] . " 500 Internal Server Error" );
 			
