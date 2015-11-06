@@ -7,6 +7,10 @@ Mosaico can be found at https://github.com/voidlabs/mosaico
 First, install Mosaico.  Then install these files on top of the Mosaico installation.  This project contains 3 new folders, 4 new files, and one modified file.  You do need to have Imagemagick support enabled in your PHP configuration.
 
 ## New folders and files
+```
+config.php
+```
+At the top of this file are a few variables that you can adjust if necessary.
 
 ```
 /dl/index.php
