@@ -4,10 +4,10 @@ chdir( ".." );
 
 require( "config.php" );
 
+$files = array();
+	
 if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 {
-	$files = array();
-	
 	$dir = scandir( $uploads_dir );
 	
 	foreach ( $dir as $file_name )
@@ -28,16 +28,9 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 			$files[] = $file;
 		}
 	}
-	
-	header( "Content-Type: application/json; charset=utf-8" );
-	header( "Connection: close" );
-	
-	echo json_encode( array( "files" => $files ) );
 }
 else if ( !empty( $_FILES ) )
 {
-	$files = array();
-	
 	foreach ( $_FILES[ "files" ][ "error" ] as $key => $error )
 	{
 		if ( $error == UPLOAD_ERR_OK )
@@ -65,9 +58,9 @@ else if ( !empty( $_FILES ) )
 			}
 		}
 	}
-	
-	header( "Content-Type: application/json; charset=utf-8" );
-	header( "Connection: close" );
-	
-	echo json_encode( array( "files" => $files ) );
 }
+
+header( "Content-Type: application/json; charset=utf-8" );
+header( "Connection: close" );
+
+echo json_encode( array( "files" => $files ) );
