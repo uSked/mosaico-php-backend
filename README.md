@@ -6,6 +6,16 @@ Mosaico can be found at https://github.com/voidlabs/mosaico
 
 First, install Mosaico.  Then install these files on top of the Mosaico installation.  This project contains 3 new folders, 4 new files, and one modified file.  You do need to have Imagemagick support enabled in your PHP configuration.
 
+## Dependencies
+
+This project requires CssToInlineStyles to work.  You can install that using composer.  To do that, from inside your root Mosaico installation directory do the following:
+
+```curl -sS https://getcomposer.org/installer | php```
+
+That will install Composer.  Then to use composer to install CssToInlineStyles:
+
+```php composer.phar install```
+
 ## New folders and files
 ```
 config.php
