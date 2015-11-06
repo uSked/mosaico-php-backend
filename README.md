@@ -8,7 +8,7 @@ First, install Mosaico.  Then install these files on top of the Mosaico installa
 
 ## Dependencies
 
-This project requires Premailer to work.  The Premailer API is used to inline CSS styles.  If that service is ever taken down, we will have to find an alternate solution.
+This project requires Premailer (http://premailer.dialect.ca/) to work.  The Premailer API is used to inline CSS styles.  If that service is ever taken down, we will have to find an alternate solution.
 
 ## New folders and files
 ```
