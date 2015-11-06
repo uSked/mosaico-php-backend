@@ -6,12 +6,14 @@ require( "config.php" );
 
 if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 {
+	$method = $_GET[ "method" ];
+	
 	$params = explode( ",", $_GET[ "params" ] );
 	
 	$width = (int) $params[ 0 ];
 	$height = (int) $params[ 1 ];
 	
-	if ( $_GET[ "method" ] == "placeholder" )
+	if ( $method == "placeholder" )
 	{
 		$image = new Imagick();
 
@@ -89,41 +91,8 @@ if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 		}
 
 		$file_name = $path_parts[ "basename" ];
-
-		$image = new Imagick( realpath( $uploads_dir . $file_name ) );
 		
-		if ( $_GET[ "method" ] == "resize" )
-		{
-			$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 0 );
-		}
-		else // $_GET[ "method" ] == "cover"
-		{
-			$image_geometry = $image->getImageGeometry();
-			
-			$width_ratio = $image_geometry[ "width" ] / $width;
-			$height_ratio = $image_geometry[ "height" ] / $height;
-			
-			$resize_width = $width;
-			$resize_height = $height;
-			
-			if ( $width_ratio > $height_ratio )
-			{
-				$resize_width = 0;
-			}
-			else
-			{
-				$resize_height = 0;
-			}
-			
-			$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 0 );
-			
-			$image_geometry = $image->getImageGeometry();
-			
-			$x = ( $image_geometry[ "width" ] - $width ) / 2;
-			$y = ( $image_geometry[ "height" ] - $height ) / 2;
-			
-			$image->cropImage( $width, $height, $x, $y );
-		}
+		require( "img/resize.php" );
 
 		header( "Content-type: " . $mime_type );
 			
