@@ -16,7 +16,7 @@ This project also requires Premailer (http://premailer.dialect.ca/).  Premailer 
 ```
 config.php
 ```
-At the top of this file are a few variables that you can adjust if necessary.
+In this file are a few variables that you can adjust if necessary.  Please check this file and make sure all the paths are correct for your Mosaico installation, and that PHP can write files to those paths.  If they are wrong or PHP cannot write files to those paths, your image uploads will not work.
 
 ```
 /dl/index.php
