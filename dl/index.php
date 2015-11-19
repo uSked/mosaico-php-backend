@@ -33,9 +33,9 @@ for ( $i = 0; $i < $num_full_pattern_matches; $i++ )
 			$width = (int) $params[ 0 ];
 			$height = (int) $params[ 1 ];
 			
-			$static_file_name = $static_dir . $method . "_" . $width . "x" . $height . "_" . urlencode( $file_name );
+			$static_file_name = $static_dir . $method . "_" . $width . "x" . $height . "_" . $file_name;
 			
-			$html = str_ireplace( $matches[ 1 ][ $i ], $base_url . $static_file_name, $html );
+			$html = str_ireplace( $matches[ 1 ][ $i ], $base_url . urlencode( $static_file_name ), $html );
 			
 			require( "img/resize.php" );
 			

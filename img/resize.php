@@ -4,7 +4,7 @@ $image = new Imagick( realpath( $uploads_dir . $file_name ) );
 
 if ( $method == "resize" )
 {
-	$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 0 );
+	$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 1.0 );
 }
 else // $method == "cover"
 {
@@ -25,7 +25,7 @@ else // $method == "cover"
 		$resize_height = 0;
 	}
 
-	$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 0 );
+	$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 1.0 );
 
 	$image_geometry = $image->getImageGeometry();
 
