@@ -9,20 +9,24 @@ $files = array();
 if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 {
 	$dir = scandir( $uploads_dir );
-	
+
+	$dir = array_filter($dir, function($k){
+        return in_array(pathinfo($k, PATHINFO_EXTENSION), ['jpg', 'png']);
+	});
+
 	foreach ( $dir as $file_name )
 	{
-		if ( is_file( $uploads_dir . $file_name ) )
+		if ( is_file( $uploads_dir .  $file_name ) )
 		{
 			$file = array(
 				"name" => $file_name,
-				"url" => $uploads_dir . $file_name,
+				"url" => $base_url . $uploads_dir . $file_name,
 				"size" => filesize( $uploads_dir . $file_name )
 			);
 			
 			if ( file_exists( realpath( $thumbnails_dir . $file_name ) ) )
 			{
-				$file[ "thumbnailUrl" ] = $thumbnails_dir . $file_name;
+				$file[ "thumbnailUrl" ] = $base_url . $thumbnails_dir . $file_name;
 			}
 			
 			$files[] = $file;
@@ -43,15 +47,15 @@ else if ( !empty( $_FILES ) )
 			{
 				$image = new Imagick( realpath( $uploads_dir . $file_name ) );
 					
-				$image->resizeImage( $thumbnail_width, $thumbnail_height, Imagick::FILTER_LANCZOS, 1.0, TRUE );
+				$image->resizeImage( $thumbnail_width, $thumbnail_height, Imagick::FILTER_LANCZOS, 0, TRUE );
 				$image->writeImage( realpath( $thumbnails_dir ) . "/". $file_name );
 				$image->destroy();
 				
 				$file = array(
 					"name" => $file_name,
-					"url" => $uploads_dir . $file_name,
+					"url" => $base_url . $uploads_dir . $file_name,
 					"size" => filesize( $uploads_dir . $file_name ),
-					"thumbnailUrl" => $thumbnails_dir . $file_name
+					"thumbnailUrl" => $base_url . $thumbnails_dir . $file_name
 				);
 				
 				$files[] = $file;
