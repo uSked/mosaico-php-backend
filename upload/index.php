@@ -47,7 +47,7 @@ else if ( !empty( $_FILES ) )
 			{
 				$image = new Imagick( realpath( $uploads_dir . $file_name ) );
 					
-				$image->resizeImage( $thumbnail_width, $thumbnail_height, Imagick::FILTER_LANCZOS, 0, TRUE );
+				$image->resizeImage( $thumbnail_width, $thumbnail_height, Imagick::FILTER_LANCZOS, 1.0, TRUE );
 				$image->writeImage( realpath( $thumbnails_dir ) . "/". $file_name );
 				$image->destroy();
 				
