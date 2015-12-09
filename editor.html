@@ -30,7 +30,7 @@ $(function() {
     return;
   }
   // var basePath = window.location.href.substr(0, window.location.href.lastIndexOf('/')).substr(window.location.href.indexOf('/','https://'.length));
-  var basePath = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
+  var basePath = window.location.href.substr(0, window.location.href.lastIndexOf('/')) + "/backend-php";
   //var basePath = "http://weichel21.de/mosaico"
   var plugins;
   plugins = [function(vm) {window.viewModel = vm; }];
