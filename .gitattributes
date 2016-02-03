@@ -1,1 +1,33 @@
 * text eol=lf
+
+*.c text
+*.cabundle text
+*.css text
+*.crt text
+*.h text
+*.htaccess text
+*.html text
+*.js text
+*.json text
+*.key text
+*.md text
+*.pem text
+*.php text
+*.svg text
+*.txt text
+*.xml text
+
+*.apk binary
+*.eot binary
+*.gif binary
+*.gz binary
+*.ico binary
+*.jpg binary
+*.p12 binary
+*.pdf binary
+*.png binary
+*.swf binary
+*.ttf binary
+*.woff binary
+*.xap binary
+*.xlsx binary
