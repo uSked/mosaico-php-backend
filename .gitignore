@@ -1,0 +1,7 @@
+mosaico-php-backend.iml
+backend-php/vendor
+backend-php/composer.phar
+*.orig
+data
+dist/**
+templates/**
