@@ -346,10 +346,22 @@ function ResizeImage( $file_name, $method, $width, $height )
 	global $config;
 
 	$image = new Imagick( $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name );
+	$image_format = $image->getImageFormat();
 
 	if ( $method == "resize" )
 	{
-		$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 1.0 );
+		if ($image_format == 'GIF')
+		{
+			// for image/gif we have to resize each frame of the image
+			$image = $image->coalesceImages();
+			foreach ($image as $frame)
+			{
+				$frame->resizeImage( $width , $height , Imagick::FILTER_LANCZOS, 1.0);
+			}
+			$image = $image->deconstructImages();
+		}
+		else // $image_format != "GIF"
+			$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 1.0 );
 	}
 	else // $method == "cover"
 	{
@@ -370,15 +382,34 @@ function ResizeImage( $file_name, $method, $width, $height )
 			$resize_height = 0;
 		}
 
-		$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 1.0 );
+		if ($image_format == 'GIF')
+		{
+			$image = $image->coalesceImages();
+			foreach ($image as $frame)
+			{
+				$frame->resizeImage( $resize_width , $resize_height , Imagick::FILTER_LANCZOS, 1.0);
 
-		$image_geometry = $image->getImageGeometry();
+				$image_geometry = $image->getImageGeometry();
 
-		$x = ( $image_geometry[ "width" ] - $width ) / 2;
-		$y = ( $image_geometry[ "height" ] - $height ) / 2;
+				$x = ( $image_geometry[ "width" ] - $width ) / 2;
+				$y = ( $image_geometry[ "height" ] - $height ) / 2;
 
-		$image->cropImage( $width, $height, $x, $y );
+				$image->cropImage( $width, $height, $x, $y );
+			}
+			$image = $image->deconstructImages();
+		}
+		else
+		{
+			$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 1.0 );
+
+			$image_geometry = $image->getImageGeometry();
+
+			$x = ( $image_geometry[ "width" ] - $width ) / 2;
+			$y = ( $image_geometry[ "height" ] - $height ) / 2;
+
+			$image->cropImage( $width, $height, $x, $y );
+		}
 	}
-	
+
 	return $image;
 }
