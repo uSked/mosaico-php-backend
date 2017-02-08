@@ -240,7 +240,7 @@ function ProcessImgRequest()
 
 			header( "Content-type: " . $mime_type );
 
-			echo $image;
+			echo $image->getImagesBlob();
 		}
 	}
 }
@@ -288,8 +288,12 @@ function ProcessDlRequest()
 				$html = str_ireplace( $matches[ 1 ][ $i ], $config[ BASE_URL ] . $config[ STATIC_URL ] . urlencode( $static_file_name ), $html );
 
 				$image = ResizeImage( $file_name, $method, $width, $height );
+				$image_format = $image->getImageFormat();
 
-				$image->writeImage( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name );
+				if ($image_format == 'GIF')
+					$image->writeImages( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name, true);
+				else
+					$image->writeImage( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name );
 			}
 		}
 	}
