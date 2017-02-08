@@ -340,6 +340,11 @@ function ProcessDlRequest()
 
 /**
  * function to resize images using resize or cover methods
+ * @param $file_name String name of the image
+ * @param $method String resize|cover
+ * @param $width Int width of the image in px
+ * @param $height Int height of the image in px
+ * @return Imagick
  */
 function ResizeImage( $file_name, $method, $width, $height )
 {
