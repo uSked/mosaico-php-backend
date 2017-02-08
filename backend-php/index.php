@@ -31,15 +31,15 @@ $url = parse_url( $_SERVER[ "REQUEST_URI" ] );
 if ( array_key_exists( "path", $url ) )
 {
 	$request = substr( $url[ "path" ], strlen( dirname( $url[ "path" ] ) ) );
-	
+
 	//die( "<pre>" . print_r( $request, true ) . "</pre>" );
-	
+
 	$request_handlers = [
 		"/upload/" => "ProcessUploadRequest",
 		"/img/" => "ProcessImgRequest",
 		"/dl/" => "ProcessDlRequest"
 	];
-	
+
 	if ( array_key_exists( $request, $request_handlers ) )
 	{
 		$request_handlers[ $request ]();
@@ -63,7 +63,7 @@ function ProcessUploadRequest()
 {
 	global $config;
 	global $http_return_code;
-	
+
 	$files = array();
 
 	if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
@@ -73,11 +73,11 @@ function ProcessUploadRequest()
 		foreach ( $dir as $file_name )
 		{
 			$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
-			
+
 			if ( is_file( $file_path ) )
 			{
 				$size = filesize( $file_path );
-				
+
 				$file = [
 					"name" => $file_name,
 					"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
@@ -102,7 +102,7 @@ function ProcessUploadRequest()
 				$tmp_name = $_FILES[ "files" ][ "tmp_name" ][ $key ];
 
 				$file_name = $_FILES[ "files" ][ "name" ][ $key ];
-				
+
 				$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
 
 				if ( move_uploaded_file( $tmp_name, $file_path ) === TRUE )
@@ -114,7 +114,7 @@ function ProcessUploadRequest()
 					$image->resizeImage( $config[ THUMBNAIL_WIDTH ], $config[ THUMBNAIL_HEIGHT ], Imagick::FILTER_LANCZOS, 1.0, TRUE );
 					$image->writeImage( $config[ BASE_DIR ] . $config[ THUMBNAILS_DIR ] . $file_name );
 					$image->destroy();
-					
+
 					$file = array(
 						"name" => $file_name,
 						"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
@@ -137,7 +137,7 @@ function ProcessUploadRequest()
 			}
 		}
 	}
-	
+
 	header( "Content-Type: application/json; charset=utf-8" );
 	header( "Connection: close" );
 
@@ -240,7 +240,7 @@ function ProcessImgRequest()
 
 			header( "Content-type: " . $mime_type );
 
-			echo $image;
+			echo $image->getImagesBlob();
 		}
 	}
 }
@@ -252,7 +252,7 @@ function ProcessDlRequest()
 {
 	global $config;
 	global $http_return_code;
-	
+
 	/* run this puppy through premailer */
 
 	$premailer = Premailer::html( $_POST[ "html" ], true, "hpricot", $config[ BASE_URL ] );
@@ -260,7 +260,7 @@ function ProcessDlRequest()
 	$html = $premailer[ "html" ];
 
 	/* create static versions of resized images */
-	
+
 	$matches = [];
 
 	$num_full_pattern_matches = preg_match_all( '#<img.*?src="([^"]*?\/[^/]*\.[^"]+)#i', $html, $matches );
@@ -288,8 +288,12 @@ function ProcessDlRequest()
 				$html = str_ireplace( $matches[ 1 ][ $i ], $config[ BASE_URL ] . $config[ STATIC_URL ] . urlencode( $static_file_name ), $html );
 
 				$image = ResizeImage( $file_name, $method, $width, $height );
+				$image_format = $image->getImageFormat();
 
-				$image->writeImage( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name );
+				if ($image_format == 'GIF')
+					$image->writeImages( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name, true);
+				else
+					$image->writeImage( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name );
 			}
 		}
 	}
@@ -336,16 +340,33 @@ function ProcessDlRequest()
 
 /**
  * function to resize images using resize or cover methods
+ * @param $file_name String name of the image
+ * @param $method String resize|cover
+ * @param $width Int width of the image in px
+ * @param $height Int height of the image in px
+ * @return Imagick
  */
 function ResizeImage( $file_name, $method, $width, $height )
 {
 	global $config;
 
 	$image = new Imagick( $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name );
+	$image_format = $image->getImageFormat();
 
 	if ( $method == "resize" )
 	{
-		$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 1.0 );
+		if ($image_format == 'GIF')
+		{
+			// for image/gif we have to resize each frame of the image
+			$image = $image->coalesceImages();
+			foreach ($image as $frame)
+			{
+				$frame->resizeImage( $width , $height , Imagick::FILTER_LANCZOS, 1.0);
+			}
+			$image = $image->deconstructImages();
+		}
+		else // $image_format != "GIF"
+			$image->resizeImage( $width, $height, Imagick::FILTER_LANCZOS, 1.0 );
 	}
 	else // $method == "cover"
 	{
@@ -366,15 +387,34 @@ function ResizeImage( $file_name, $method, $width, $height )
 			$resize_height = 0;
 		}
 
-		$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 1.0 );
+		if ($image_format == 'GIF')
+		{
+			$image = $image->coalesceImages();
+			foreach ($image as $frame)
+			{
+				$frame->resizeImage( $resize_width , $resize_height , Imagick::FILTER_LANCZOS, 1.0);
 
-		$image_geometry = $image->getImageGeometry();
+				$image_geometry = $image->getImageGeometry();
 
-		$x = ( $image_geometry[ "width" ] - $width ) / 2;
-		$y = ( $image_geometry[ "height" ] - $height ) / 2;
+				$x = ( $image_geometry[ "width" ] - $width ) / 2;
+				$y = ( $image_geometry[ "height" ] - $height ) / 2;
 
-		$image->cropImage( $width, $height, $x, $y );
+				$image->cropImage( $width, $height, $x, $y );
+			}
+			$image = $image->deconstructImages();
+		}
+		else
+		{
+			$image->resizeImage( $resize_width, $resize_height, Imagick::FILTER_LANCZOS, 1.0 );
+
+			$image_geometry = $image->getImageGeometry();
+
+			$x = ( $image_geometry[ "width" ] - $width ) / 2;
+			$y = ( $image_geometry[ "height" ] - $height ) / 2;
+
+			$image->cropImage( $width, $height, $x, $y );
+		}
 	}
-	
+
 	return $image;
 }
