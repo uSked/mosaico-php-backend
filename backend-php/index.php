@@ -31,15 +31,15 @@ $url = parse_url( $_SERVER[ "REQUEST_URI" ] );
 if ( array_key_exists( "path", $url ) )
 {
 	$request = substr( $url[ "path" ], strlen( dirname( $url[ "path" ] ) ) );
-	
+
 	//die( "<pre>" . print_r( $request, true ) . "</pre>" );
-	
+
 	$request_handlers = [
 		"/upload/" => "ProcessUploadRequest",
 		"/img/" => "ProcessImgRequest",
 		"/dl/" => "ProcessDlRequest"
 	];
-	
+
 	if ( array_key_exists( $request, $request_handlers ) )
 	{
 		$request_handlers[ $request ]();
@@ -63,7 +63,7 @@ function ProcessUploadRequest()
 {
 	global $config;
 	global $http_return_code;
-	
+
 	$files = array();
 
 	if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
@@ -73,11 +73,11 @@ function ProcessUploadRequest()
 		foreach ( $dir as $file_name )
 		{
 			$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
-			
+
 			if ( is_file( $file_path ) )
 			{
 				$size = filesize( $file_path );
-				
+
 				$file = [
 					"name" => $file_name,
 					"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
@@ -102,7 +102,7 @@ function ProcessUploadRequest()
 				$tmp_name = $_FILES[ "files" ][ "tmp_name" ][ $key ];
 
 				$file_name = $_FILES[ "files" ][ "name" ][ $key ];
-				
+
 				$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
 
 				if ( move_uploaded_file( $tmp_name, $file_path ) === TRUE )
@@ -114,7 +114,7 @@ function ProcessUploadRequest()
 					$image->resizeImage( $config[ THUMBNAIL_WIDTH ], $config[ THUMBNAIL_HEIGHT ], Imagick::FILTER_LANCZOS, 1.0, TRUE );
 					$image->writeImage( $config[ BASE_DIR ] . $config[ THUMBNAILS_DIR ] . $file_name );
 					$image->destroy();
-					
+
 					$file = array(
 						"name" => $file_name,
 						"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
@@ -137,7 +137,7 @@ function ProcessUploadRequest()
 			}
 		}
 	}
-	
+
 	header( "Content-Type: application/json; charset=utf-8" );
 	header( "Connection: close" );
 
@@ -252,7 +252,7 @@ function ProcessDlRequest()
 {
 	global $config;
 	global $http_return_code;
-	
+
 	/* run this puppy through premailer */
 
 	$premailer = Premailer::html( $_POST[ "html" ], true, "hpricot", $config[ BASE_URL ] );
@@ -260,7 +260,7 @@ function ProcessDlRequest()
 	$html = $premailer[ "html" ];
 
 	/* create static versions of resized images */
-	
+
 	$matches = [];
 
 	$num_full_pattern_matches = preg_match_all( '#<img.*?src="([^"]*?\/[^/]*\.[^"]+)#i', $html, $matches );
