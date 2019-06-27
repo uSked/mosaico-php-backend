@@ -68,11 +68,11 @@ function ProcessUploadRequest()
 
 	if ( $_SERVER[ "REQUEST_METHOD" ] == "GET" )
 	{
-		$dir = scandir( $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] );
+		$dir = scandir( $config[ 'BASE_DIR' ] . $config[ 'UPLOADS_DIR' ] );
 
 		foreach ( $dir as $file_name )
 		{
-			$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
+			$file_path = $config[ 'BASE_DIR' ] . $config[ 'UPLOADS_DIR' ] . $file_name;
 			
 			if ( is_file( $file_path ) )
 			{
@@ -80,13 +80,13 @@ function ProcessUploadRequest()
 				
 				$file = [
 					"name" => $file_name,
-					"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
+					"url" => $config[ 'BASE_URL' ] . $config[ 'UPLOADS_URL' ] . $file_name,
 					"size" => $size
 				];
 
-				if ( file_exists( $config[ BASE_DIR ] . $config[ THUMBNAILS_DIR ] . $file_name ) )
+				if ( file_exists( $config[ 'BASE_DIR' ] . $config[ 'THUMBNAILS_DIR' ] . $file_name ) )
 				{
-					$file[ "thumbnailUrl" ] = $config[ BASE_URL ] . $config[ THUMBNAILS_URL ] . $file_name;
+					$file[ "thumbnailUrl" ] = $config[ 'BASE_URL' ] . $config[ 'THUMBNAILS_URL' ] . $file_name;
 				}
 
 				$files[] = $file;
@@ -103,7 +103,7 @@ function ProcessUploadRequest()
 
 				$file_name = $_FILES[ "files" ][ "name" ][ $key ];
 				
-				$file_path = $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name;
+				$file_path = $config[ 'BASE_DIR' ] . $config[ 'UPLOADS_DIR' ] . $file_name;
 
 				if ( move_uploaded_file( $tmp_name, $file_path ) === TRUE )
 				{
@@ -111,15 +111,15 @@ function ProcessUploadRequest()
 
 					$image = new Imagick( $file_path );
 
-					$image->resizeImage( $config[ THUMBNAIL_WIDTH ], $config[ THUMBNAIL_HEIGHT ], Imagick::FILTER_LANCZOS, 1.0, TRUE );
-					$image->writeImage( $config[ BASE_DIR ] . $config[ THUMBNAILS_DIR ] . $file_name );
+					$image->resizeImage( $config[ 'THUMBNAIL_WIDTH' ], $config[ 'THUMBNAIL_HEIGHT' ], Imagick::FILTER_LANCZOS, 1.0, TRUE );
+					$image->writeImage( $config[ 'BASE_DIR' ] . $config[ 'THUMBNAILS_DIR' ] . $file_name );
 					$image->destroy();
 					
 					$file = array(
 						"name" => $file_name,
-						"url" => $config[ BASE_URL ] . $config[ UPLOADS_URL ] . $file_name,
+						"url" => $config[ 'BASE_URL' ] . $config[ 'UPLOADS_URL' ] . $file_name,
 						"size" => $size,
-						"thumbnailUrl" => $config[ BASE_URL ] . $config[ THUMBNAILS_URL ] . $file_name
+						"thumbnailUrl" => $config[ 'BASE_URL' ] . $config[ 'THUMBNAILS_URL' ] . $file_name
 					);
 
 					$files[] = $file;
@@ -255,7 +255,7 @@ function ProcessDlRequest()
 	
 	/* run this puppy through premailer */
 
-	$premailer = Premailer::html( $_POST[ "html" ], true, "hpricot", $config[ BASE_URL ] );
+	$premailer = Premailer::html( $_POST[ "html" ], true, "hpricot", $config[ 'BASE_URL' ] );
 
 	$html = $premailer[ "html" ];
 
@@ -274,7 +274,7 @@ function ProcessDlRequest()
 			if ( preg_match( '#/img\?src=(.*)&amp;method=(.*)&amp;params=(.*)#i', $matches[ 1 ][ $i ], $src_matches ) !== FALSE )
 			{
 				$file_name = urldecode( $src_matches[ 1 ] );
-				$file_name = substr( $file_name, strlen( $config[ BASE_URL ] . $config[ UPLOADS_URL ] ) );
+				$file_name = substr( $file_name, strlen( $config[ 'BASE_URL' ] . $config[ 'UPLOADS_URL' ] ) );
 
 				$method = urldecode( $src_matches[ 2 ] );
 
@@ -285,11 +285,11 @@ function ProcessDlRequest()
 
 				$static_file_name = $method . "_" . $width . "x" . $height . "_" . $file_name;
 
-				$html = str_ireplace( $matches[ 1 ][ $i ], $config[ BASE_URL ] . $config[ STATIC_URL ] . urlencode( $static_file_name ), $html );
+				$html = str_ireplace( $matches[ 1 ][ $i ], $config[ 'BASE_URL' ] . $config[ 'STATIC_URL' ] . urlencode( $static_file_name ), $html );
 
 				$image = ResizeImage( $file_name, $method, $width, $height );
 
-				$image->writeImage( $config[ BASE_DIR ] . $config[ STATIC_DIR ] . $static_file_name );
+				$image->writeImage( $config[ 'BASE_DIR' ] . $config[ 'STATIC_DIR' ] . $static_file_name );
 			}
 		}
 	}
@@ -341,7 +341,7 @@ function ResizeImage( $file_name, $method, $width, $height )
 {
 	global $config;
 
-	$image = new Imagick( $config[ BASE_DIR ] . $config[ UPLOADS_DIR ] . $file_name );
+	$image = new Imagick( $config[ 'BASE_DIR' ] . $config[ 'UPLOADS_DIR' ] . $file_name );
 
 	if ( $method == "resize" )
 	{
